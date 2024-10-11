@@ -196,7 +196,7 @@ def plot_ticks(ax, Ls, Ln=None, add_yticks=False):
 def make_animation(seq, con=None, xyz=None, plddt=None, pae=None,
                    losses=None, pos_ref=None, line_w=2.0,
                    dpi=100, interval=60, color_msa="Taylor",
-                   length=None, align_xyz=True, color_by="plddt", **kwargs):
+                   length=None, align_xyz=True, color_by="plddt", out_dir=None, rclimit:int=None, **kwargs):
 
   def nankabsch(a,b,**kwargs):
     ok = np.isfinite(a).all(axis=1) & np.isfinite(b).all(axis=1)
@@ -333,4 +333,8 @@ def make_animation(seq, con=None, xyz=None, plddt=None, pae=None,
   # make animation!
   ani = animation.ArtistAnimation(fig, ims, blit=True, interval=interval)
   plt.close()
+  if rclimit is not None:
+    matplotlib.rcParams.update({'animation.embed_limit': rclimit * 1024 * 1024})
+  if out_dir is not None:
+    return ani.save(out_dir, writer="ffmpeg", dpi=dpi)
   return ani.to_html5_video()
